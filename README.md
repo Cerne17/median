@@ -78,6 +78,33 @@ services:
 volumes:
     postgres:
 ```
+- image: tells Docker which image to look for (postgres - version 13.5)
+- environment: Sets the environment variables.
+- volumes: creates the data persistence in the Docker Container
+- ports: maps ports from the host machine to the container (`'host-port:container-port'`)
+- The postgreSQL database will run on the 5432 port, this port should not be used by any other process.
+### Running Docker:
+On a new Terminal, in the project's main directory run the following command to run the docker-compose file.
+```console
+docker-compose up
+```
+This will run the postgres database while running.
+If you encounter a Permission error, try the following command:
+```console
+sudo docker-compose up
+```
+# 4. Setting up Prisma:
+## 4.1. Installing Prisma:
+Install Prisma CLI as a development dependency:
+```console
+npm install -D prisma
+```
+## 4.2. Initializing a Prisma Project:
+```console
+npx prisma init
+```
+This command creates the `schema.prisma` file. This is the main configuration file that will contain our database schema. 
+This command also creates the `.env` file in our project. This file is never uploaded to online repositories, thus, we will create a `.env.example` file with dummie values to emulate a real `.env`.
 
 ## References:
 - [Prisma Blog](https://www.prisma.io/blog/nestjs-prisma-rest-api-7D056s1BmOL0)
