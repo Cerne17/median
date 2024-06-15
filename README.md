@@ -106,6 +106,36 @@ npx prisma init
 This command creates the `schema.prisma` file. This is the main configuration file that will contain our database schema. 
 This command also creates the `.env` file in our project. This file is never uploaded to online repositories, thus, we will create a `.env.example` file with dummie values to emulate a real `.env`.
 
+### 4.2.1. The Prisma Syntax:
+- Data source: Specifies the database connection. The default configuration to this project describes that the database provider is PostgreSQL and the db connection string is found under the `DATABASE_URL` environment variable.
+- Generator: Sets the assets to be created in the moment of running the `prisma generate` command
+- Data Model: Defines your db's models (or entities). Each model will have it's own table on the database. In the current state, our schema does not have any Data Model.
+
+## 4.3. Modeling the Data:
+For this Medium simplified clone, you will only need the `Article` model to represent each article on the blog.
+### 4.3.1. Creating the Article on schema:
+In the `prisma/schema.prisma` file add a new model to the schema, named `Article`.
+```prisma
+model Article {
+  id          Int      @id @default(autoincrement()) // @id indicates it's the PK
+  title       String   @unique
+  description String? // The `?` indicates it is an optional argument
+  body        String
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt // @updatedAt updates the field with the current timestamp when the Article is modified
+}
+```
+## 4.4. Migrating the Database:
+With the schema created, we need to migrate it, to actually create all the tables in the database. To do so, run the following command:
+```console
+npx prisma migrate dev --name "init"
+```
+### 4.4.1. Explaining the migration command:
+1. Save the migration: Generates the SQL commands equivalent to the `schema.prisma` file;
+2. Execute the migration: Execute the SQL commands in the migration file to create the tables in the database;
+3. Generate the Prisma Client: (Requires another dependency: `@prisma/client`) Prisma installs automatically the `@prisma/client` dependency if lacking and generates the Prisma Client based on the current Migration. The Prisma Client is a query builder auto-generated from the Prisma schema. Can be used to send queries to the database.
+
 ## References:
 - [Prisma Blog](https://www.prisma.io/blog/nestjs-prisma-rest-api-7D056s1BmOL0)
 - [Prisma Docs](https://www.prisma.io/docs) 
