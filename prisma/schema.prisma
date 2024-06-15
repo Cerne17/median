@@ -12,3 +12,13 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Article {
+  id          Int      @id @default(autoincrement()) // @id indicates it's the PK
+  title       String   @unique
+  description String? // The `?` indicates it is an optional argument
+  body        String
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt // @updatedAt updates the field with the current timestamp when the Article is modified
+}
