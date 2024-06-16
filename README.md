@@ -281,6 +281,20 @@ async function bootstrap() {
 bootstrap();
 ```
 Now, we added the Swagger's setup to our application and the [`http://localhost:3000/api`](http://localhost:3000/api) endpoint is available to access our API's documentation. There, we can see the Swagger's default documentation page.
+# 6. Implementing CRUD Operations for Article:
+Now, we are going to implement our first [CRUD](https://www.codecademy.com/article/what-is-crud) operations (Create, Read, Update, Delete) for the `Article` model we created earlier. Together, we should implement any [business logic](https://www.techtarget.com/whatis/definition/business-logic) for our application.
+## 6.1. Generating the Nest Resources:
+Before creating any of the CRUD operations, we need to create the REST resources using the Nest CLI for Article, since we just created the Article model in the Database but didn't instantiate it inside Nest quite yet.
+```console
+npx nest generate resource
+```
+Here, you will be prompted some questions:
+1. `What name would you like to use for this resource (plural, e.g., "users")?` *articles*
+2. `What transport layer do you use?` *REST API*
+3. `Would you like to generate CRUD entry points?` *Yes*
+
+Now, we just created the Boilerplate for our Article Model inside Nestjs!
+We should have a new directory inside our `src/` folder: `src/articles/` and we should have the new articles' endpoints appearing in our Swagger's documentation page under [`http://localhost:3000/api`](http://localhost:3000/api) url.
 
 # Quick Tips:
 ## Errors when running the Dockerfile:
