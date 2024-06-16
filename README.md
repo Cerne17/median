@@ -219,6 +219,36 @@ By adding the `prisma` field, we should be able to run the `seed.ts` script usin
 ```console
 npx prisma db seed
 ```
+## 4.6. Creating a Prisma Service:
+This is done mearly for best practices. We create a service called `PrismaService` responsible to instantiate a `PrismaClient` in order to abstract the Prisma Client API from our Application.
+To instantiate this Prisma Service, we will use the [Nest's CLI](https://docs.nestjs.com/cli/usages):
+```command
+npx nest generate module prisma
+npx nest generate service prisma
+```
+### 4.6.1. The prisma.service.ts file:
+Inside the `prisma/prisma.service.ts` file, we should have the following code:
+```typescript
+import { INestApplication, Injectable } from '@nestjs/common';
+import { PrismaClient } from '@prisma/client';
+
+@Injectable()
+export class PrismaService extends PrismaClient {}
+```
+### 4.6.2. The prisma.module.ts file:
+In terms of [Architecture](https://refactoring.guru/design-patterns), the `prisma.module.ts` file is responsible to create a [singleton](https://refactoring.guru/pt-br/design-patterns/singleton) instance of the `PrismaService` to be shared accross the application. For doing so, we add the `PrismaService` to the `exports` array in the `prisma.module.ts` file.
+```typescript
+import { Module } from '@nestjs/common';
+import { PrismaService } from './prisma.service';
+
+@Module({
+  providers: [PrismaService],
+  exports: [PrismaService],
+})
+export class PrismaModule {}
+```
+Essentially, all the files that import the `PrismaModule` now have access to the `PrismaService` too.
+This is a common pattern and a good coding and architecture practice in Nest projects.
 
 # Quick Tips:
 ## Errors when running the Dockerfile:
@@ -241,6 +271,13 @@ If the case is an Authentication Error, execute the command as administrator/sud
 sudo docker-compose up
 ```
 If the error is just Authentication, using this command should work.
+
+## Errors Generating Modules and Services while running the Nest Server:
+If you find any errors running the Nest's CLI while Nest is already running, such as: `Cannot find module './app.controller'`, run the following command from the terminal:
+```console
+rm -rf dist
+```
+And then restart the server.
 
 # References:
 - [Prisma Blog](https://www.prisma.io/blog/nestjs-prisma-rest-api-7D056s1BmOL0)
