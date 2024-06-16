@@ -194,6 +194,31 @@ main()
     await prisma.$disconnect();
   });
 ```
+Here, we use the `upsert` command, which is similar to `create`. There main difference is that `upsert` first checks the database for an instance with the same identifier as the one we are currently inserting and blocks if it would cause a dupe. On the other hand, `create` only inserts the new instance in the database, being a little more dangerous.
+
+### 4.5.2. Adding the seed command to our package.json:
+In order to be able to run the seeding script easier, we can insert it in the package.json file, to use it with the prisma cli:
+```json
+// package.json
+
+// ...
+  "scripts": {
+    // ...
+  },
+  (...)
+  "jest" : {
+    // ...
+  },
+  "prisma": {
+
+    "seed": "ts-node prisma/seed.ts"
+
+  }
+```
+By adding the `prisma` field, we should be able to run the `seed.ts` script using the following command on the terminal:
+```console
+npx prisma db seed
+```
 
 # Quick Tips:
 ## Errors when running the Dockerfile:
