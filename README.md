@@ -104,7 +104,7 @@ npm install -D prisma
 npx prisma init
 ```
 This command creates the `schema.prisma` file. This is the main configuration file that will contain our database schema. 
-This command also creates the `.env` file in our project. This file is never uploaded to online repositories, thus, we will create a `.env.example` file with dummie values to emulate a real `.env`.
+This command also creates the `.env` file in our project. This file is never uploaded to online repositories, thus, we will create a `.env.example` file with dummy values to emulate a real `.env`.
 
 ### 4.2.1. The Prisma Syntax:
 - Data source: Specifies the database connection. The default configuration to this project describes that the database provider is PostgreSQL and the db connection string is found under the `DATABASE_URL` environment variable.
@@ -136,7 +136,88 @@ npx prisma migrate dev --name "init"
 2. Execute the migration: Execute the SQL commands in the migration file to create the tables in the database;
 3. Generate the Prisma Client: (Requires another dependency: `@prisma/client`) Prisma installs automatically the `@prisma/client` dependency if lacking and generates the Prisma Client based on the current Migration. The Prisma Client is a query builder auto-generated from the Prisma schema. Can be used to send queries to the database.
 
-## References:
+If successful, inside the `prisma` directory, we should have a new folder: `migrations`.
+
+## 4.5. Seeding the Database:
+Currently, the database is empty. Thus, we will create a seed script to populate the database with some dummy data.
+### 4.5.1 Creating the Seeding file:
+Inside `prisma/` create the `seed.ts` file:
+```console
+touch prisma/seed.ts
+```
+Then, add the following code inside it:
+```typescript
+import { PrismaClient } from '@prisma/client';
+
+
+// initialize Prisma Client
+const prisma = new PrismaClient();
+
+async function main() {
+
+  // create two dummy articles
+  const post1 = await prisma.article.upsert({
+    where: { title: 'Prisma Adds Support for MongoDB' },
+    update: {},
+    create: {
+      title: 'Prisma Adds Support for MongoDB',
+      body: 'Support for MongoDB has been one of the most requested features since the initial release of...',
+      description:
+        "We are excited to share that today's Prisma ORM release adds stable support for MongoDB!",
+      published: false,
+    },
+  });
+
+  const post2 = await prisma.article.upsert({
+    where: { title: "What's new in Prisma? (Q1/22)" },
+    update: {},
+    create: {
+      title: "What's new in Prisma? (Q1/22)",
+      body: 'Our engineers have been working hard, issuing new releases with many improvements...',
+      description:
+        'Learn about everything in the Prisma ecosystem and community from January to March 2022.',
+      published: true,
+    },
+  });
+
+  console.log({ post1, post2 });
+}
+
+// execute the main function
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    // close Prisma Client at the end
+    await prisma.$disconnect();
+  });
+```
+
+# Quick Tips:
+## Errors when running the Dockerfile:
+### Error Fetching server API version:
+If you find an error when trying to run the `docker-compose up` command, check if Docker Service is running:
+```console
+systemctl status docker
+```
+If the Service is not running, then start it:
+```console
+systemctl start docker
+```
+And then try to run again. It should fix the errors.
+```console
+docker-compose up
+```
+### Authentication Error:
+If the case is an Authentication Error, execute the command as administrator/sudo:
+```console
+sudo docker-compose up
+```
+If the error is just Authentication, using this command should work.
+
+# References:
 - [Prisma Blog](https://www.prisma.io/blog/nestjs-prisma-rest-api-7D056s1BmOL0)
 - [Prisma Docs](https://www.prisma.io/docs) 
 - [Nestjs Docs](https://docs.nestjs.com/) 
