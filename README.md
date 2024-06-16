@@ -296,6 +296,41 @@ Here, you will be prompted some questions:
 Now, we just created the Boilerplate for our Article Model inside Nestjs!
 We should have a new directory inside our `src/` folder: `src/articles/` and we should have the new articles' endpoints appearing in our Swagger's documentation page under [`http://localhost:3000/api`](http://localhost:3000/api) url.
 
+## 6.1. Adding PrismaClient to the Articles module:
+As antecipated earlier, we need to add the Prisma Client Singleton to the Articles module for it to be able to use it.
+To do so, we simply need to add a new import to our Article module file under `src/articles/articles.module.ts`:
+```typescript
+import { Module } from '@nestjs/common';
+import { ArticlesService } from './articles.service';
+import { ArticlesController } from './articles.controller';
+import { PrismaModule } from 'src/prisma/prisma.module';
+
+
+@Module({
+  controllers: [ArticlesController],
+  providers: [ArticlesService],
+  imports: [PrismaModule],
+
+})
+export class ArticlesModule {}
+```
+
+Now, we can inject the `PrismaService` inside the `ArticlesService` and use it to access the database. To do this, add a constructor to `articles.service.ts`:
+```typescript
+import { Injectable } from '@nestjs/common';
+import { CreateArticleDto } from './dto/create-article.dto';
+import { UpdateArticleDto } from './dto/update-article.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
+
+@Injectable()
+export class ArticlesService {
+  // Injecting the PrismaClient to access the database
+  constructor(private prisma: PrismaService) {}   
+
+  // CRUD Operations
+}
+```
+
 # Quick Tips:
 ## Errors when running the Dockerfile:
 ### Error Fetching server API version:
