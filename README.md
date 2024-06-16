@@ -249,6 +249,38 @@ export class PrismaModule {}
 ```
 Essentially, all the files that import the `PrismaModule` now have access to the `PrismaService` too.
 This is a common pattern and a good coding and architecture practice in Nest projects.
+# 5. Setting up Swagger:
+[Swagger](https://swagger.io/docs/) is a documentation tool to document APIs following the OpenAI's specifications.
+## 5.1. Installing Swagger:
+To install Swagger, use the following command:
+```console
+npm install --save @nestjs/swagger swagger-ui-express
+```
+## 5.2. Initializing Swagger on the Application:
+To use Swagger, we need to initialize it in our application.
+To do so, we need to open the `main.ts` file and inistialize Swagger using the `SwaggerModule` class:
+```typescript
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+
+  const config = new DocumentBuilder()
+    .setTitle('Median')
+    .setDescription('Median API Description')
+    .setVersion('0.1')
+    .build()
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
+
+  await app.listen(3000);
+}
+bootstrap();
+```
+Now, we added the Swagger's setup to our application and the [`http://localhost:3000/api`](http://localhost:3000/api) endpoint is available to access our API's documentation. There, we can see the Swagger's default documentation page.
 
 # Quick Tips:
 ## Errors when running the Dockerfile:
