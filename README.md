@@ -332,6 +332,62 @@ export class ArticlesService {
 ```
 ## 6.3. Creating the Endpoints:
 ### 6.3.1. GET /articles:
+The controller for this endpoint is `findAll`. This endpoint is supposed to return all published articles in the database.
+This controller is implemented like so in the `articles.service.ts` file:
+```typescript
+@Get()
+findAll() {
+  return this.prisma.article.findMany({ where: { published: true } });
+}
+```
+This query will resolve for all the article's instances with the `published` atribute set to `true`.
+### 6.3.2. GET /articles/drafts:
+This endpoint will return all the article's instances with the `published` attribute set to `false`. 
+For doing so, we first declare the Endpoint in the `articles.controller.ts` file, then we create the method in `articles.service.ts`.
+1. Articles' controller file:
+```typescript
+@Get('drafts')
+findDrafts() {
+  return this.articlesService.findDrafts();
+}
+```
+2. Articles' service file:
+```typescript
+findDrafts() {
+  return this.prisma.article.findMany({ where: { published: false } });
+}
+```
+### 6.3.3. GET /articles/:id:
+This endpoint will return an article given it's `id`. Since this is a default endpoint, we won't need to set anything on the controller side. But the implementation on `service` will be done using the `findUnique` method from `prisma` as follows:
+```typescript
+findOne(id: number) {
+  return this.prisma.article.findUnique({ where: { id } });
+}
+```
+### 6.3.4. POST /articles:
+This endpoint is used for adding a new article instance to the database:
+For doing so, we will need to create a `CreateArticleDto` type. A DTO is a Data Transfer Object, which is, basically an object that defines how the data will be sent over to the network.
+To declare the CreateArticleDto class, we do it in the `src/articles/dto/create-article-dto.ts`:
+```typescript
+import { ApiProperty } from '@nestjs/swagger';
+
+export class CreateArticleDto {
+
+  @ApiProperty()
+  title: string;
+
+  @ApiProperty({ required: false })
+  description?: string;
+
+  @ApiProperty()
+  body: string;
+
+  @ApiProperty({ required: false, default: false })
+  published?: boolean = false;
+}
+```
+We use the `@ApiProperty` decorators to make the class properties visible to the `SwaggerModule` as described in [NestJS Docs](https://docs.nestjs.com/openapi/types-and-parameters).
+Now, the CreateArticleDto should be visible under the Schemas on the Swagger API page.
 
 
 # Quick Tips:
