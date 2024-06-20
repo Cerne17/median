@@ -296,7 +296,7 @@ Here, you will be prompted some questions:
 Now, we just created the Boilerplate for our Article Model inside Nestjs!
 We should have a new directory inside our `src/` folder: `src/articles/` and we should have the new articles' endpoints appearing in our Swagger's documentation page under [`http://localhost:3000/api`](http://localhost:3000/api) url.
 
-## 6.1. Adding PrismaClient to the Articles module:
+## 6.2. Adding PrismaClient to the Articles module:
 As antecipated earlier, we need to add the Prisma Client Singleton to the Articles module for it to be able to use it.
 To do so, we simply need to add a new import to our Article module file under `src/articles/articles.module.ts`:
 ```typescript
@@ -330,6 +330,9 @@ export class ArticlesService {
   // CRUD Operations
 }
 ```
+## 6.3. Creating the Endpoints:
+### 6.3.1. GET /articles:
+
 
 # Quick Tips:
 ## Errors when running the Dockerfile:
